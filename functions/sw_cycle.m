@@ -67,9 +67,9 @@ t_wholeCy = cell(N_cycles,1);
 
 for i = 1 : N_cycles
     t_wholeCy{i} = (interv1:interv2) + samples*(i-1);
+    P = sampling(t(sw_t), x(sw_t));
     y_c{i} = [t(sw_t), y(sw_t)];
     x_c{i} = [t(sw_t), x(sw_t)];
-    P = sampling(x(sw_t),tcur);
     y_s{i} = [t(sw_t(P)), y(sw_t(P)), P'];
     x_s{i} = [t(sw_t(P)), x(sw_t(P)), P'];
     Samp_Cy(i) = length(P);

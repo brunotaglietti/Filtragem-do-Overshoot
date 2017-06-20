@@ -3,7 +3,7 @@
 % já chaveado na frequência de amostragem fmod. Os cruzamentos do sinal com "zero" (média
 % do sinal) auxiliam a determinação dos pontos de amostragem.
 
-function [P, varargout] = sampling(y,t,fmod)
+function [P, varargout] = sampling(t,y,fmod)
 if nargin < 3, fmod = 6.9994e9; end
 Tmod = 1/fmod;
 avg = sum(y)/length(y);

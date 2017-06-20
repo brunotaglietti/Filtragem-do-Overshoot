@@ -7,7 +7,6 @@ function cyPlot(signal, switched, s_info, yout, n, errors)
 %% Loading and preparing data
 global fignum;
 y = switched.y{n};
-x = switched.x{n};
 ys = switched.y_s{n};
 ydd = switched.ys_slice{n};
 xdd = (switched.xs_slice{n} - s_info.x_mean)/s_info.x_mod*s_info.y_mod + s_info.y_mean;
@@ -49,7 +48,6 @@ fig_prop = {'linewidth', 2, 'markersize', 10};
 subplot(3,1,[1, 2]);
 
 plot(1e6*y(1:ys(section,3),1), y_sec(1:ys(section,3)),'color',.6*ones(1,3)); hold on
-
 h1 = plot(t_s, (ydd(1:section,2)-s_info.y_mean)/s_info.y_mod,'.', 'color', .7*[1 1 1]);
 h2 = plot(t_s, (xdd(1:section,2)-s_info.y_mean)/s_info.y_mod,'o', 'color', .7*[1 1 1]);
 h3 = plot(t_s, ys_sec(1:section),'.', 'color', .4*ones(1,3), 'markersize', 14);
@@ -59,19 +57,16 @@ x_axis = get(gca, 'xlim');
 plot(x_axis, [1 1], '--', x_axis, -[1 1], '--', x_axis, [0 0], '--', 'color', .9*ones(1,3)); drawnow;
 xlim([min(t_s) max(t_s)]); ylim([min(y_sec(1:ys(section,3))), max(y_sec(1:ys(section,3)))]);
 xlabel('Time (µs)'); ylabel('Signals');
-% legend([h1 h2 h3], 'Original samples', 'RLS', 'Wiener filter');
-legend([h1 h2 h3 h4 h5], 'Decision driven', 'Electrical reference', 'Original samples', 'RLS', 'Wiener filter');
+legend([h1 h2 h3 h4 h5], 'Decision driven', 'Electrical reference', 'Original samples',...
+    'RLS', 'Wiener filter');
 set(gca, 'FontName', 'Times New Roman','FontSize',12);
 
 subplot 313; hold on;
-
 plot(t_s, e_c(1:section), '.-', 'color', .4*ones(1,3), fig_prop{:});
 plot(t_s, erls_c(1:section), 'x-', 'Color', [71 203 44]/255, fig_prop{:});
 plot(t_s, ew_c(1:section), '+-', 'Color', [72, 133, 237]/255, fig_prop{:});
-
 xlim([min(t_s) max(t_s)]);
 % ylim([0 1.1])
-ylabel('e^2');   xlabel('Time (µs)');    title(' ');
+ylabel('e^2'); xlabel('Time (µs)'); 
 set(gca, 'FontName', 'Times New Roman', 'FontSize', 12);
-
 end
