@@ -1,4 +1,4 @@
-function [method, bits, vars] = char_config
+function [method, bits, vars] = char_config(bias,deg)
 %%
 global setups
 fig = uifigure('Name', 'Configuration', 'Position', [680 558 480 200]);
@@ -7,7 +7,6 @@ panel.Position = fig.Position .* [0 0 1 1] + [20 20 -40 -40];
 bg = uibuttongroup(panel,...
                   'Title','Fiber Span',...
                   'Position', [20 60 120 80]);
-% Create three radio buttons in the button group.
 uiradiobutton(bg,...
                   'Text','Back-to-Back',...
                   'UserData','syncd_b2b_brief',...
@@ -34,7 +33,6 @@ uiradiobutton(bg2,...
 bg3 = uibuttongroup(panel,...
                   'Title','Impulse bits',...
                   'Position', [300 40 120 100]);
-% Create three radio buttons in the button group.
 uiradiobutton(bg3,...
                   'Text','16ps',...
                   'UserData',2,...
@@ -56,16 +54,16 @@ uilabel(panel,...
 uibutton(panel,'Text','Single',...
                   'Position', panel.Position .* [.5 0 0 0] + [10 10 50 20],...
                   'ButtonPushedFcn', @(btn,event) plotButtonPushed(fig,bg,bg2,bg3));
-btn2 = uibutton(panel,'Text','Whole',...
+uibutton(panel,'Text','Whole',...
                   'Position', panel.Position .* [.5 0 0 0] + [70 10 50 20],...
                   'ButtonPushedFcn', @(btn2,event) plotButtonPushed2(fig,bg,bg2,bg3));
 uiwait(fig);
 % 
 method = setups.method;
 bits = setups.bits;
-if strcmp(setups.scope,'whole'), vars.bias = 0.06:0.02:0.16; vars.deg = 0.3:0.3:1.2;
+if strcmp(setups.scope,'whole'), vars.bias = bias; vars.deg = deg;
 elseif strcmp(setups.scope,'single')
-        select_curve;
+        select_curve(bias,deg);
         vars.bias = setups.bias; vars.deg = setups.deg;
 end
 end
@@ -77,7 +75,6 @@ function plotButtonPushed(fig,bg,bg2,bg3)
     setups.scope = 'single';
     delete(fig);
 end
-
 function plotButtonPushed2(fig,bg,bg2,bg3)
     global setups;
     setups.method = {bg.SelectedObject.UserData,bg2.SelectedObject.UserData};
@@ -86,25 +83,30 @@ function plotButtonPushed2(fig,bg,bg2,bg3)
     delete(fig);
 end
 
-function select_curve
+function select_curve(bias,deg)
 %%
+% global setups;
 fig = uifigure('Name', 'Selection', 'Position', [1200 558 480 250]);
 panel = uipanel(fig);
 panel.Position = fig.Position .* [0 0 1 1] + [20 20 -40 -40];
 
 kb = uiknob(panel,'discrete',...
     'ValueChangedFcn',@(kb,event) knob1Turned(kb));
-kb.Position = [70 panel.Position(4)-150 80 80];
-kb.Items = {'60', '80', '100', '120', '140', '160', '180'};
-kb.ItemsData = {0.06 .08 .1 .12 .14 .16 .18};
+kb.Position = [80 panel.Position(4)-150 80 80];
+
+kbItems = cell(1,length(bias)); kbItemsData = kbItems;
+for i = 1:length(bias), kbItems{i} = num2str(bias(i)*1e3); kbItemsData{i} = bias(i); end
+kb.Items = kbItems; kb.ItemsData = kbItemsData;
+% kb.Items = {'60', '80', '100', '120', '140', '160', '180'};
+% kb.ItemsData = {0.06 .08 .1 .12 .14 .16 .18};
 kb.Value = 0.08;
 
 uilabel(panel, 'Position', [kb.Position(1:2)+[0 110], 150, 20],...
     'fontweight','bold','Text', 'SOA bias (mA)');
 
 kb2 = uiknob(panel,'discrete',...
-    'Position', [panel.Position(3)-150, panel.Position(4)-150, 80, 80],...
-    'ValueChangedFcn',@(kb2,event) knob2Turned(kb));
+    'Position', [panel.Position(3)-160, panel.Position(4)-150, 80, 80],...
+    'ValueChangedFcn',@(kb2,event) knob2Turned(kb2));
 kb2.Items = {'0', '0.3', '0.6', '0.9', '1.2'};
 kb2.ItemsData = {0, .3, .6, .9, 1.2};
 kb2.Value = 1.2;
@@ -112,6 +114,9 @@ kb2.Value = 1.2;
 uilabel(panel, 'Position', [kb2.Position(1:2)+[15 110], 150, 20],...
     'fontweight','bold','Text', 'Step (V)');
 
+uibutton(panel, 'Position', [panel.Position(3)/2-35 10 70 20],...
+    'Text', 'Set',...
+    'ButtonPushedFcn', @(btn,event) plotButtonPushed3(fig,kb,kb2));
 uiwait(fig);
 end
 
@@ -119,8 +124,13 @@ function knob1Turned(kb)
 global setups;
 setups.bias = kb.Value;
 end
-
 function knob2Turned(kb2)
 global setups;
 setups.deg = kb2.Value;
+end
+function plotButtonPushed3(fig,kb,kb2)
+global setups;
+setups.bias = kb.Value;
+setups.deg = kb2.Value;
+delete(fig);
 end

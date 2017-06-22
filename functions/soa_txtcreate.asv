@@ -7,11 +7,12 @@ charinfo.span = 'syncd_b2b_brief';
 charinfo.cur = (0.060:0.020:0.140);     % Corrente de polarização em X.XXXA
 charinfo.deg = (0.0:0.3:1.2);           % Amplitude do degrau em X.XXV
 % imp = (0.00:0.30:1.20);                              % Amplitude do impulso em X.XXV
-cur = charinfo.cur; deg = charinfo.deg;
 direc_root = ['E:\Projetos Colaborativos\chav-amo-SOA-prbs\',...
     charinfo.SOA, '\', charinfo.span, '\'];
 strend = ['-mod' sprintf('%.0f',charinfo.modV*1e3),...
     'mV-pinpd-var-pinsoa' num2str(charinfo.pinsoa) 'dbm'];
+
+cur = charinfo.cur; deg = charinfo.deg;
 
 method = {'step-','pisic-','misic-'};
 for k = 1:length(method)

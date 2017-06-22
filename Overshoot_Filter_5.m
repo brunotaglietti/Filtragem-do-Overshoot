@@ -2,13 +2,10 @@ close all; clc;
 addpath('functions', 'plots'); global fignum;
 
 %% UI configuration
-% [method, bits] = char_config;
-method = {'syncd','misic'}; bits = 4;
 
-bias = 0.10;
-deg = 1.2;
-% bias = 0.06:0.02:0.16;
-% deg = 0.3:0.3:1.2;
+SOA = 'CIP-NL';
+bias = 0.06:0.02:0.16;  deg = 0.3:0.3:1.2;
+[method, bits, vars] = char_config(bias,deg); bias = vars.bias; deg = vars.deg;
 
 M = zeros(length(deg),length(bias));
 mse_char = struct('s', M, 'w', M, 'w2', M, 'rls', M, 'rls_i', M, 'rls2', M);
