@@ -3,7 +3,7 @@ clear all; clc
 charinfo.pinsoa = -6;
 charinfo.modV = 1;
 charinfo.SOA = 'CIP-L';
-charinfo.span = 'syncd_b2b_brief';
+charinfo.span = 'syncd';
 charinfo.cur = (0.060:0.020:0.140);     % Corrente de polarização em X.XXXA
 charinfo.deg = (0.0:0.3:1.2);           % Amplitude do degrau em X.XXV
 % imp = (0.00:0.30:1.20);                              % Amplitude do impulso em X.XXV
