@@ -2,10 +2,9 @@ close all; clc;
 addpath('functions', 'plots');
 
 %% Memory Allocation
-if ~exist('charinfo','var')
-    [FileName,PathName, ~] = uigetfile('E:\Projetos Colaborativos\chav-amo-SOA-prbs');
-    load([PathName FileName]); charinfo.Path = PathName; clear FileName PathName;
-end
+
+[FileName,PathName, ~] = uigetfile('E:\Projetos Colaborativos\chav-amo-SOA-prbs\CIP-L\');
+load([PathName FileName]); charinfo.Path = PathName; clear FileName PathName;
 method = cell(1,2); method{1} = charinfo.span;
 M = zeros(length(charinfo.deg),length(charinfo.cur));
 mse_char = struct('s', M, 'w', M, 'w2', M, 'rls', M, 'rls_i', M, 'rls2', M);
@@ -30,8 +29,8 @@ end
 end
 
 %% Saving Results
-if ~exist([PathName 'Results\'],'dir'), mkdir([PathName 'Results\']); end
-results_file = [PathName 'Results\' charinfo.SOA '_' method{:} sprintf('-%i',bits) '.mat'];
+if ~exist([charinfo.Path 'Results\'],'dir'), mkdir([charinfo.Path 'Results\']); end
+results_file = [charinfo.Path 'Results\' charinfo.SOA '_' method{:} sprintf('-%i',bits) '.mat'];
 save(results_file, 'yout', 'mse_char', 'ber', 'errors');
 end
 end

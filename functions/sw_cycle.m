@@ -52,12 +52,11 @@ end
 interv1 = riseedge - round(samples/4);
 if interv1 < 1
     interv1 = falledge + round(samples/4);
-    riseedge = riseedge + samples - 1; falledge = falledge + samples - 1;
+    riseedge = riseedge + samples - 1;
 end
 interv2 = interv1 + samples - 1;
 
-offIni = round(riseedge - .3*samples);
-offFin = round(riseedge - .1*samples);
+offIni = round(riseedge - .3*samples); offFin = round(riseedge - .1*samples);
 swThresh = max(y_avg(offIni:offFin));
 
 swIni = riseedge - find(y_avg(riseedge:-1:offFin) < swThresh, 1, 'first') + 1;

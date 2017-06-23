@@ -24,7 +24,7 @@ end
 end
 
 %% PLOTS
-close all; fignum = 1; fprintf('\nPlotting Section\n');
+close all; fignum = 1; fprintf('Plotting Section\n');
 if length(deg) == 1 && length(bias) == 1, NE = 0;
 for n = 1:s_info.N_cycles
     if NE < sum(errors.s(n,:)), NE = sum(errors.s(n,:));
