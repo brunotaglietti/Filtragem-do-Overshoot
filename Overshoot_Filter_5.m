@@ -6,7 +6,6 @@ if ~exist('charinfo','var')
     [FileName,PathName, ~] = uigetfile('E:\Projetos Colaborativos\chav-amo-SOA-prbs');
     load([PathName FileName]); charinfo.Path = PathName; clear FileName PathName;
 end
-
 [tech, bits, vars] = char_config(charinfo.cur,charinfo.deg); bias = vars.bias; deg = vars.deg;
 M = zeros(length(deg),length(bias));
 mse_char = struct('s', M, 'w', M, 'w2', M, 'rls', M, 'rls_i', M, 'rls2', M);
@@ -26,12 +25,10 @@ end
 
 %% PLOTS
 close all; fignum = 1; fprintf('\nPlotting Section\n');
-if length(deg) == 1 && length(bias) == 1
-NE = 0;
+if length(deg) == 1 && length(bias) == 1, NE = 0;
 for n = 1:s_info.N_cycles
     if NE < sum(errors.s(n,:)), NE = sum(errors.s(n,:));
-        close all; fignum = 1;
-        cyPlot(signal, switched, s_info, yout, n, errors);
+        close all; fignum = 1; cyPlot(signal, switched, s_info, yout, n, errors);
         waitforbuttonpress;
     end
 end
