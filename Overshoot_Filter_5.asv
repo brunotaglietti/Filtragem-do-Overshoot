@@ -4,10 +4,11 @@ addpath('functions', 'plots'); global fignum;
 %% UI Configuration and Memory Allocation
 if ~exist('charinfo','var')
     [FileName,PathName, ~] = uigetfile('E:\Projetos Colaborativos\chav-amo-SOA-prbs');
-    load([PathName FileName]); charinfo.Path = PathName; clear FileName PathName;
+    load([PathName FileName]); clear FileName; charinfo.Path = PathName;
 end
 
 [tech, bits, vars] = char_config(charinfo.cur,charinfo.deg); bias = vars.bias; deg = vars.deg;
+% method = cell(1,2); method{1} = charinfo.span; method{2} = tech; clear tech;
 M = zeros(length(deg),length(bias));
 mse_char = struct('s', M, 'w', M, 'w2', M, 'rls', M, 'rls_i', M, 'rls2', M);
 ber =   struct('s', M, 'w', M, 'w2', M, 'rls', M, 'rls_i', M, 'rls2', M); clear M;
@@ -26,6 +27,12 @@ end
 
 %% PLOTS
 close all; fignum = 1; fprintf('\nPlotting Section\n');
+if length(deg) == 1 && length(bias) == 1, cyPlot(signal,switched, s_info, yout, 7000, errors);
+elseif length(deg) == 1 && length(bias) > 1, bias_plot(bias, mse_char, 'MSE');
+elseif length(deg) > 1, VIplot(bias, deg, mse_char, 'MSE', [0 1]);
+    VIplot(bias, deg, ber, 'BER',[-1.5 -.1]);
+end
+%% Errors checking
 if length(deg) == 1 && length(bias) == 1
 NE = 0;
 for n = 1:s_info.N_cycles
@@ -35,7 +42,4 @@ for n = 1:s_info.N_cycles
         waitforbuttonpress;
     end
 end
-elseif length(deg) == 1 && length(bias) > 1, bias_plot(bias, mse_char, 'MSE');
-elseif length(deg) > 1, VIplot(bias, deg, mse_char, 'MSE', [0 1]);
-    VIplot(bias, deg, ber, 'BER',[-1.5 -.1]);
 end

@@ -4,25 +4,25 @@
 % do impulso de chaveamento), e o método da caracterização (step, pisic, misic, e número
 % de bits de impulso, se aplicável.)
 
-function [signal] = syncd_import(SOA, char_var, method)
-% char_var = [Corrente, Degrau, Impulso, bits];
-% root_dir = 'C:/Users/Bruno/Documents/Projetos Colaborativos/';
-root_dir = 'E:/Projetos Colaborativos/';
-fprintf(['Loading file for ' sprintf('%.0fmA and %.1fV. ',1e3*char_var(1), char_var(2))]);
-dir_meas = [root_dir 'chav-amo-SOA-prbs/' SOA '/' method{1} '/' method{2} ...
-    sprintf('-%i/dados/%imA',int16(char_var(4)),int16(char_var(1)*1e3)) '/'];
-
-tech = method{2}; imp_time = char_var(4)*8;
+function [signal] = syncd_import(charinfo, cur_var, tech)
+fprintf(['Loading file for ' sprintf('%.0fmA and %.1fV. ',1e3*cur_var(1), cur_var(2))]);
+%%
+dir_meas = [charinfo.Path tech sprintf('-%i\\dados\\%imA',int16(cur_var(4)),int16(cur_var(1)*1e3)) '\'];
+imp_time = cur_var(4)*8;
 if strcmp(tech(1:4),'step'), aux = 'step-'; imp_time = 0;
 elseif strcmp(tech(1:4),'pisi'), aux = 'pisic-';
 elseif strcmp(tech(1:4), 'misi'), aux = 'misic-';
 end
-if strcmp(method{1},'syncd'), Pin = 'pinsoa-6dbm';
-elseif strcmp(method{1}, 'syncd_b2b_brief'), Pin = 'pinsoa-5dbm';
-else, Pin = 'pinsoa-5dbm';
-end
-name_eval = ['i0.%03iA-t0.%02dns-deg%1.2fV-imp%1.2fV-mod1000mV-pinpd-var-' Pin '.h5'];
-file_name = [aux sprintf(name_eval,int16(char_var(1)*1e3),imp_time,char_var(2),char_var(3))];
+% if strcmp(method{1},'syncd'), Pin = 'pinsoa-6dbm';
+% elseif strcmp(method{1}, 'syncd_b2b_brief'), Pin = 'pinsoa-5dbm';
+% else, Pin = 'pinsoa-5dbm';
+% end
+
+% TRAZER PIN DE CHARINFO
+Pin = ['pinsoa' num2str(charinfo.pinsoa) 'dbm'];
+name_eval = ['i0.%03iA-t0.%02dns-deg%1.2fV-imp%1.2fV-mod',...]
+    sprintf('%.0f',charinfo.modV*1e3) 'mV-pinpd-var-' Pin '.h5'];
+file_name = [aux sprintf(name_eval,int16(cur_var(1)*1e3),imp_time,cur_var(2),cur_var(3))];
 file_address = [dir_meas file_name];
 %% Leitura da Medição
 % O osciloscópio salva os arquivos *.h5* em valores brutos,
