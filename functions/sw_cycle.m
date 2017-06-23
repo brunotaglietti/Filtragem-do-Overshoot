@@ -64,12 +64,6 @@ swFin = swIni + round(samples/2);
 sw_t = (swIni:swFin);
 N_cycles = floor(length(y(interv1:end)) / samples/2); % Numero de ciclos de chaveamento
 
-% plot(t_avg,y_avg,'-o'), hold on
-% plot(t_avg(riseedge), y_avg(riseedge),'*r')
-% plot(t_avg(swIni), y_avg(swIni), '*g')
-% plot(t_avg(offIni:offFin),y_avg(offIni:offFin))
-% plot(get(gca,'xlim'),swThresh*[1 1],'--')
-
 %% Alocação de memória
 Samp_Cy = zeros(N_cycles,1);
 cy_avg = zeros(N_cycles,1);     cx_avg = zeros(N_cycles,1);
