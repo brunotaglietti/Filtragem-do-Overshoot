@@ -17,7 +17,7 @@
 function [W, varargout] = algRLS(x,d,Mi,varargin)
 T = length(x);
 if size(Mi,1) ~= 1, Wi = Mi; M = size(Mi,1);
-else M = Mi; Wi = zeros(M,1); end
+else, M = Mi; Wi = zeros(M,1); end
 switch nargin
     case 3
         lambda = 0.9;
