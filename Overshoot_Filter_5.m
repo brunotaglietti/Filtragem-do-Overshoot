@@ -8,8 +8,8 @@ if ~exist('charinfo','var')
 end
 [tech, bits, vars] = char_config(charinfo.cur,charinfo.deg); bias = vars.bias; deg = vars.deg;
 M = zeros(length(deg),length(bias));
-mse_char = struct('s', M, 'w', M, 'w2', M, 'rls', M, 'rls_i', M, 'rls2', M);
-ber =   struct('s', M, 'w', M, 'w2', M, 'rls', M, 'rls_i', M, 'rls2', M); clear M;
+mse_char = struct('s', M, 'w', M, 'w2', M, 'rls', M, 'rls2', M);
+ber =   struct('s', M, 'w', M, 'w2', M, 'rls', M, 'rls2', M); clear M;
 
 %% Processing
 t_start = tic;
@@ -27,12 +27,12 @@ end
 close all; fignum = 1; fprintf('Plotting Section\n');
 if length(deg) == 1 && length(bias) == 1, NE = 0;
 for n = 1:s_info.N_cycles
-    if NE < sum(errors.s(n,:)), NE = sum(errors.s(n,:));
-        close all; fignum = 1; cyPlot(signal, switched, s_info, yout, n, errors);
+    if NE < sum([errors.s{n}]), NE = sum([errors.s{n}]);
+        cyPlot(signal, switched, s_info, yout, n, errors);
         waitforbuttonpress;
     end
 end
 elseif length(deg) == 1 && length(bias) > 1, bias_plot(bias, mse_char, 'MSE');
 elseif length(deg) > 1, VIplot(bias, deg, mse_char, 'MSE', [0 1]);
-    VIplot(bias, deg, ber, 'BER',[-1.5 -.1]);
+    VIplot(bias, deg, ber, 'BER',[-3 -1]);
 end

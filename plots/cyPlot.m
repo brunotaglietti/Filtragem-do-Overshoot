@@ -10,13 +10,13 @@ y = switched.y{n};
 ys = switched.y_s{n};
 ydd = switched.ys_slice{n};
 xdd = (switched.xs_slice{n} - s_info.x_mean)/s_info.x_mod*s_info.y_mod + s_info.y_mean;
-errors_1 = errors.s(n,:);
-e_c = yout.e(n,:);   ew_c = yout.ew(n,:); erls_c = yout.erls(n,:);
+errors_1 = errors.s{n};
+e_c = yout.e{n};   ew_c = yout.ew{n}; erls_c = yout.erls{n};
 y_sec = (y(:,2) - s_info.y_mean)/s_info.y_mod;
 ys_sec = (ys(:,2) - s_info.y_mean)/s_info.y_mod;
 range = s_info.t_wholeCy{n}; L = length(range);
 range = range(round(L/5):round(L*4/5));
-section = length(yout.w(n,:));
+section = length(yout.w{n});
 t_s = 1e6*y(ys(1:section,3),1);
 %% Plot including off-switch signal
 eval([sprintf('fig%i',fignum) ' = anotherfig;'])
@@ -51,8 +51,8 @@ plot(1e6*y(1:ys(section,3),1), y_sec(1:ys(section,3)),'color',.6*ones(1,3)); hol
 h1 = plot(t_s, (ydd(1:section,2)-s_info.y_mean)/s_info.y_mod,'.', 'color', .7*[1 1 1]);
 h2 = plot(t_s, (xdd(1:section,2)-s_info.y_mean)/s_info.y_mod,'o', 'color', .7*[1 1 1]);
 h3 = plot(t_s, ys_sec(1:section),'.', 'color', .4*ones(1,3), 'markersize', 14);
-h4 = plot(t_s, yout.rls(n,:), 'x', 'Color', [71 203 44]/255, fig_prop{:});
-h5 = plot(t_s, yout.w(n,:), '+', 'Color', [72, 133, 237]/255, fig_prop{:}); drawnow;
+h4 = plot(t_s, yout.rls{n}, 'x', 'Color', [71 203 44]/255, fig_prop{:});
+h5 = plot(t_s, yout.w{n}, '+', 'Color', [72, 133, 237]/255, fig_prop{:}); drawnow;
 x_axis = get(gca, 'xlim');
 plot(x_axis, [1 1], '--', x_axis, -[1 1], '--', x_axis, [0 0], '--', 'color', .9*ones(1,3)); drawnow;
 xlim([min(t_s) max(t_s)]); ylim([min(y_sec(1:ys(section,3))), max(y_sec(1:ys(section,3)))]);

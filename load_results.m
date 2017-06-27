@@ -19,5 +19,5 @@ close all;
 fignum = 1; fprintf('Plotting Section\n');
 if length(charinfo.deg) == 1 && length(charinfo.cur) > 1, charinfo.cur_plot(charinfo.cur, mse_char, 'MSE');
 elseif length(charinfo.deg) > 1, VIplot(charinfo.cur, charinfo.deg, mse_char, 'MSE', [0 1]);
-    VIplot(charinfo.cur, charinfo.deg, ber, 'BER',[-3 -.1]);
+    VIplot(charinfo.cur, charinfo.deg, ber, 'BER',[-3 -1]);
 end

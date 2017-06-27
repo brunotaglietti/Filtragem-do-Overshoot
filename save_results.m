@@ -7,8 +7,8 @@ addpath('functions', 'plots');
 load([PathName FileName]); charinfo.Path = PathName; clear FileName PathName;
 method = cell(1,2); method{1} = charinfo.span;
 M = zeros(length(charinfo.deg),length(charinfo.cur));
-mse_char = struct('s', M, 'w', M, 'w2', M, 'rls', M, 'rls_i', M, 'rls2', M);
-ber =   struct('s', M, 'w', M, 'w2', M, 'rls', M, 'rls_i', M, 'rls2', M); clear M;
+mse_char = struct('s', M, 'w', M, 'w2', M, 'rls', M, 'rls2', M);
+ber =   struct('s', M, 'w', M, 'w2', M, 'rls', M, 'rls2', M); clear M;
 
 %% Processing
 t_start = tic;
