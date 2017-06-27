@@ -6,14 +6,13 @@
 % modifique-se deg_range para que varra a região desejada (0.5:0.25:1.5).
 
 function VIplot(bias, deg, mse_char, char_title, c_lims)
+fprintf('3D plot of Bias and Step characterization.\n');
+%%
 global fignum;
 curves = {'Unfiltered', 'Wiener filter', 'Wiener filter - 4 taps', 'RLS',...
     'RLS - 4 taps', 'RLS - identity'};
-
-iter_size = 1000;
-[X,Y] = meshgrid(bias,deg);
-xi = linspace(bias(1), bias(end),iter_size);
-yi = linspace(deg(1), deg(end),iter_size);
+[X,Y] = meshgrid(bias,deg); iter_size = 1000;
+xi = linspace(bias(1), bias(end),iter_size); yi = linspace(deg(1), deg(end),iter_size);
 [XI, YI] = meshgrid(xi,yi);
 msefields = fieldnames(mse_char);
 

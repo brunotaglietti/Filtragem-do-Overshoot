@@ -3,14 +3,13 @@ addpath('functions', 'plots'); global fignum;
 
 %% UI Configuration and Memory Allocation
 if ~exist('charinfo','var')
-    [FileName,PathName, ~] = uigetfile('E:\Projetos Colaborativos\chav-amo-SOA-prbs');
+    [FileName,PathName, ~] = uigetfile('E:\Projetos Colaborativos\chav-amo-SOA-prbs\CIP-L\');
     load([PathName FileName]); charinfo.Path = PathName; clear FileName PathName;
 end
 [tech, bits, vars] = char_config(charinfo.cur,charinfo.deg); bias = vars.bias; deg = vars.deg;
-M = zeros(length(deg),length(bias));
-mse_char = struct('s', M, 'w', M, 'w2', M, 'rls', M, 'rls2', M);
-ber =   struct('s', M, 'w', M, 'w2', M, 'rls', M, 'rls2', M); clear M;
-
+eF = {'s', 'w', 'w2', 'rls', 'rls2'}; M = zeros(length(deg),length(bias));
+for i=1:length(eF), eF{2,i} = M; end;
+mse_char = struct(eF{:}); ber = struct(eF{:}); clear M i eFields;
 %% Processing
 t_start = tic;
 for B = 1:length(bias)
@@ -24,14 +23,15 @@ end
 end
 
 %% PLOTS
-close all; fignum = 1; fprintf('Plotting Section\n');
+close all; fignum = 1;
 if length(deg) == 1 && length(bias) == 1, NE = 0;
-for n = 1:s_info.N_cycles
-    if NE < sum([errors.s{n}]), NE = sum([errors.s{n}]);
-        cyPlot(signal, switched, s_info, yout, n, errors);
-        waitforbuttonpress;
-    end
-end
+errorDistPlot(s_info, errors);
+% for n = 1:s_info.N_cycles
+%     if NE < sum([errors.s{n}]), NE = sum([errors.s{n}]);
+%         cyPlot(signal, switched, s_info, yout, n, errors);
+%         waitforbuttonpress;
+%     end
+% end
 elseif length(deg) == 1 && length(bias) > 1, bias_plot(bias, mse_char, 'MSE');
 elseif length(deg) > 1, VIplot(bias, deg, mse_char, 'MSE', [0 1]);
     VIplot(bias, deg, ber, 'BER',[-3 -1]);

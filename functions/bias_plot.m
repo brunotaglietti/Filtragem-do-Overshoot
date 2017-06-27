@@ -2,6 +2,8 @@
 % Função que plota resultados em relação a corrente de polarização do SOA.
 
 function bias_plot(bias_r, mse_char, char_title)
+fprintf('Bias characterization.\n');
+%%
 if ~exist('char_title','var'), char_title = 'Mean Squared Error'; end;
 global fignum;
 eval([sprintf('fig%i',fignum) ' = anotherfig;'])

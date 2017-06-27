@@ -4,6 +4,7 @@
 % in s_info, the filters outputs yout, and the particular cycle to plot.
 
 function cyPlot(signal, switched, s_info, yout, n, errors)
+fprintf('Cycle plot.\n');
 %% Loading and preparing data
 global fignum;
 y = switched.y{n};

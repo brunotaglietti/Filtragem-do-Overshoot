@@ -1,5 +1,5 @@
-% function errorDistPlot(s_info, errors)
-close all;
+function errorDistPlot(s_info, errors)
+close all; fprintf('Guard-Interval Analysis and plot.\n')
 eFields = fieldnames(errors)';
 %%
 errorDist = zeros(1,max(s_info.Samp_Cy));
@@ -26,9 +26,8 @@ for k = 1:s_info.N_cycles
 end
 GIerror.(eFields{f})(GI+1) = GIerror.(eFields{f})(GI+1)/(sum(s_info.Samp_Cy)-GI*s_info.N_cycles);
 end
-% subplot(1,length(eFields),f)
-plot(0:maxGI,log10(GIerror.(eFields{f}))), hold on;
-% title(eFields{f})
+plot(0:maxGI,log10(GIerror.(eFields{f})),'-o'), hold on;
 xlabel('Guard-Interval'), ylabel('Log_{10} (BER)'), %ylim([-1.6 -1]);
 end
 legend(eFields)
+end
