@@ -7,7 +7,7 @@ for f = 1:length(eFields)
 for k = 1:s_info.N_cycles
     errorDist(1:s_info.Samp_Cy(k)) = errorDist(1:s_info.Samp_Cy(k)) + errors.(eFields{f}){k};
 end
-subplot(length(eFields),1,f)
+subplot(1,length(eFields),f)
 bar(errorDist), title(eFields{f})
 end
 

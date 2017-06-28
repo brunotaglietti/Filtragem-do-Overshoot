@@ -67,13 +67,17 @@ plot(t_avg(riseedge), y_avg(riseedge),'*r')
 plot(t_avg(swIni), y_avg(swIni), '*g')
 plot(t_avg(offIni:offFin),y_avg(offIni:offFin))
 plot(get(gca,'xlim'),swThresh*[1 1],'--')
+
+s_info.y_avg = [t_avg(sw_t), y_avg(sw_t)];
+y_avg = y_avg(sw_t) - min(y_avg(sw_t)) + y_opening*1e-2;
 %% Alocação de memória e Amostragem
 
-cy_avg = zeros(N_cycles,1);    cx_avg = zeros(N_cycles,1);
-ymod = zeros(N_cycles,1);      xmod = zeros(N_cycles,1);
-y_c = cell(N_cycles,1);        y_c{1} = y(sw_t);
-x_c = cell(N_cycles,1);        x_c{1} = x(sw_t);
-y_s = cell(N_cycles,1);        x_s = cell(N_cycles,1);
+cy_avg = zeros(N_cycles,1); cx_avg = zeros(N_cycles,1);
+ymod = zeros(N_cycles,1);   xmod = zeros(N_cycles,1);
+y_c = cell(N_cycles,1);     y_c{1} = y(sw_t);
+x_c = cell(N_cycles,1);     x_c{1} = x(sw_t);
+y_s = cell(N_cycles,1);     x_s = cell(N_cycles,1);
+yN = cell(N_cycles,1);      yNs = cell(N_cycles,1);
 ys_slice = cell(N_cycles, 1);  xs_slice = cell(N_cycles,1);
 t_wholeCy = cell(N_cycles,1);  Samp_Cy = zeros(N_cycles,1);
 
@@ -81,10 +85,16 @@ for i = 1 : N_cycles
     t_wholeCy{i} = (interv1:interv2) + samples*(i-1);
     P = sampling(t(sw_t), x(sw_t));
     y_c{i} = [t(sw_t), y(sw_t)]; x_c{i} = [t(sw_t), x(sw_t)];
-    y_s{i} = [t(sw_t(P)), y(sw_t(P)), P']; x_s{i} = [t(sw_t(P)), x(sw_t(P)), P'];
+    y_s{i} = [t(sw_t(P)), y(sw_t(P))]; x_s{i} = [t(sw_t(P)), x(sw_t(P))];
+    
+    yN{i} = [t(sw_t), (y(sw_t) - min(y(sw_t)))./y_avg];
+    
     Samp_Cy(i) = length(P); cy_avg(i) = mean(y(sw_t)); cx_avg(i) = mean(x(sw_t));
     sw_t = sw_t + samples;
 end
+
+% plot(t(sw_t), (y(sw_t)-min(y(sw_t)))./y_avg) <- plot yN{i}
+
 
 switched.y = y_c; switched.y_s = y_s;
 switched.x = x_c; switched.x_s = x_s;
