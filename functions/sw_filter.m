@@ -1,8 +1,8 @@
 %% Filtragem do sinal
-% O sinal chaveado switched é filtrado nesta função. As saídas da função são o sinal de
+% O sinal y_s é filtrado nesta função com referência a xs_slice. As saídas da função são o sinal de
 % saída do filtro, o Erro Médio Quadrático (MSE) resultante e a taxa de erro (BER).
 
-function [yout, sw_mse, ber, errors] = sw_filter(switched, s_info, filter_info)
+function [yout, sw_mse, ber, errors] = sw_filter(y_s, xs_slice, s_info, filter_info)
 fprintf('Filtering cycles. ')
 %%
 M = 2; M2 = 4;
@@ -13,8 +13,8 @@ end
 Rx = zeros(s_info.N_cycles,M); Pxd = Rx;
 Rx2 = zeros(s_info.N_cycles,M2); Pxd2 = Rx2;
 for n = 1:s_info.N_cycles
-    ys = switched.y_s{n};       ys = (ys(:,2) - s_info.y_mean)/s_info.y_mod;
-    xs = switched.xs_slice{n};  xs = (xs(:,2) - s_info.x_mean)/s_info.x_mod;
+    ys = y_s{n};       ys = (ys(:,2) - s_info.y_mean)/s_info.y_mod;
+    xs = xs_slice{n};  xs = (xs(:,2) - s_info.x_mean)/s_info.x_mod;
     R = mXcor(ys, M);           Rx(n,:) = R(1,:);
     R2 = mXcor(ys, M2);         Rx2(n,:) = R2(1,:);
     Pxd(n,:) = mXcor(ys, xs, M);
@@ -34,10 +34,8 @@ sew = se; sew2 = se;    serls = se; serls2 = se;
 bers = cell(s_info.N_cycles,1); sections = zeros(s_info.N_cycles,1);
 berw = bers; berw2 = bers; berrls = bers; berrls2 = bers; %berrls_i = bers;
 for n = 1:s_info.N_cycles
-    ys = switched.y_s{n};
-    ys = (ys(:,2) - s_info.y_mean)/s_info.y_mod;
-    xs = switched.xs_slice{n};
-    xs = (xs(:,2) - s_info.x_mean)/s_info.x_mod;
+    ys = y_s{n};        ys = (ys(:,2) - s_info.y_mean)/s_info.y_mod;
+    xs = xs_slice{n};   xs = (xs(:,2) - s_info.x_mean)/s_info.x_mod;
     sections(n) = length(ys);
     
     yw{n} = filter(w,1,ys);

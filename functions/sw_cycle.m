@@ -105,7 +105,7 @@ end
 %%
 switched.y = y_c; switched.y_s = y_s;
 switched.x = x_c; switched.x_s = x_s;
-switched.yN = yN; switched.yNs = yNs;
+switched.Norm.y = yN; switched.Norm.y_s = yNs;
 s_info.Samp_Cy = Samp_Cy;
 s_info.N_cycles = N_cycles;
 s_info.t_wholeCy = t_wholeCy;
@@ -134,5 +134,5 @@ for i = 1 : N_cycles
 end
 switched.ys_slice = ys_slice;
 switched.xs_slice = xs_slice;
-switched.yNs_slice = yNs_slice;
+switched.Norm.ys_slice = yNs_slice;
 end
