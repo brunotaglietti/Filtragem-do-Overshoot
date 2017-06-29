@@ -5,15 +5,14 @@
 % amplitude do degrau. Portanto, essa seção do script necessita que, no cabeçalho,
 % modifique-se deg_range para que varra a região desejada (0.5:0.25:1.5).
 
-function VIplot(bias, deg, mse_char, char_title, c_lim)
+function VIplot(bias, deg, mse_char, char_title, c_lims)
+fprintf('3D plot of Bias and Step characterization.\n');
+%%
 global fignum;
 curves = {'Unfiltered', 'Wiener filter', 'Wiener filter - 4 taps', 'RLS',...
     'RLS - 4 taps', 'RLS - identity'};
-
-iter_size = 1000;
-[X,Y] = meshgrid(bias,deg);
-xi = linspace(bias(1), bias(end),iter_size);
-yi = linspace(deg(1), deg(end),iter_size);
+[X,Y] = meshgrid(bias,deg); iter_size = 1000;
+xi = linspace(bias(1), bias(end),iter_size); yi = linspace(deg(1), deg(end),iter_size);
 [XI, YI] = meshgrid(xi,yi);
 msefields = fieldnames(mse_char);
 
@@ -29,10 +28,10 @@ for n = 1:length(msefields)
     plot(X(:),Y(:),'.','Color','k','MarkerSize',5);
     xlim([min(bias) max(bias)]);
     ylim([min(deg) max(deg)]);
-    if exist('c_lim','var'), caxis(c_lim); end;
-    xlabel('Bias (A)'), ylabel('Step (V)'), zlabel(char_title)
+    if exist('c_lim','var'), caxis(c_lims); end;
+    xlabel('Bias (A)'), ylabel('Step (V)')
     title(curves{n});
-    c = colorbar;  % ylabel(c,'Mean Squared Error');
+    c = colorbar; 
     if strcmp(char_title,'BER'), ylabel(c,'Bit Error Rate');
     else, ylabel(c,'Mean Squared Error'); end
     set(gca, 'FontName', 'Times New Roman','FontSize',12)

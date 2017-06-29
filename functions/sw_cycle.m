@@ -37,9 +37,7 @@ end
 y_avg = y_avg / N_cycles;   y_avg = [y_avg; y_avg];
 y_opening = max(y_avg) - min(y_avg);
 
-t_avg = signal.t(1:length(y_avg),1);
 
-%%
 rise_thresh = mean(y_avg) + 0.1*y_opening;
 fall_thresh = mean(y_avg) - 0.1*y_opening;
 if(y_avg(samples) <= mean(y_avg))     % Condição de chave aberta no ponto _samples_.
@@ -58,58 +56,83 @@ interv2 = interv1 + samples - 1;
 
 offIni = round(riseedge - .3*samples); offFin = round(riseedge - .1*samples);
 swThresh = max(y_avg(offIni:offFin));
-
+swOn = round(samples*.1):round(samples*.4);
 swIni = riseedge - find(y_avg(riseedge:-1:offFin) < swThresh, 1, 'first') + 1;
 swFin = swIni + round(samples/2);
 sw_t = (swIni:swFin);
 N_cycles = floor(length(y(interv1:end)) / samples/2); % Numero de ciclos de chaveamento
+t_avg = signal.t(1:length(y_avg),1);
+s_info.y_avg = [t_avg(sw_t), y_avg(sw_t)];
+avgProf = y_avg(sw_t) - min(y_avg(sw_t)) + y_opening*1e-3; swOnM = mean(avgProf(swOn));
+avgProf = (avgProf + swOnM*.1)/swOnM;
 
-%% Alocação de memória
-Samp_Cy = zeros(N_cycles,1);
-cy_avg = zeros(N_cycles,1);     cx_avg = zeros(N_cycles,1);
-ymod = zeros(N_cycles,1);       xmod = zeros(N_cycles,1);
-y_c = cell(N_cycles,1);         y_c{1} = y(sw_t);
-x_c = cell(N_cycles,1);         x_c{1} = x(sw_t);
-y_s = cell(N_cycles,1);         x_s = cell(N_cycles,1);
-ys_slice = cell(N_cycles, 1);      xs_slice = cell(N_cycles,1);
-t_wholeCy = cell(N_cycles,1);
+% close all
+% plot(t_avg,y_avg,'-o'), hold on
+% plot(t_avg(riseedge), y_avg(riseedge),'*r')
+% plot(t_avg(offIni:offFin),y_avg(offIni:offFin))
+% plot(t_avg(swIni), y_avg(swIni), '*g')
+% plot(t_avg(swOn+swIni), y_avg(swOn+swIni))
+% plot(get(gca,'xlim'),swThresh*[1 1],'--')
+% plot(t_avg(sw_t),y_avg(sw_t),'linewidth',2)
+% figure, plot(t_avg(sw_t),avgProf)
+%% Alocação de memória e Amostragem
+
+cy_avg = zeros(N_cycles,1); cx_avg = zeros(N_cycles,1);
+ymod = zeros(N_cycles,1);   xmod = zeros(N_cycles,1);
+y_c = cell(N_cycles,1);     y_c{1} = y(sw_t);
+x_c = cell(N_cycles,1);     x_c{1} = x(sw_t);
+y_s = cell(N_cycles,1);     x_s = cell(N_cycles,1);
+yN = cell(N_cycles,1);      yNs = cell(N_cycles,1);
+ys_slice = cell(N_cycles, 1); xs_slice = cell(N_cycles,1); yNs_slice = cell(N_cycles,1);
+t_wholeCy = cell(N_cycles,1); Samp_Cy = zeros(N_cycles,1);
 
 for i = 1 : N_cycles
     t_wholeCy{i} = (interv1:interv2) + samples*(i-1);
     P = sampling(t(sw_t), x(sw_t));
-    y_c{i} = [t(sw_t), y(sw_t)];
-    x_c{i} = [t(sw_t), x(sw_t)];
-    y_s{i} = [t(sw_t(P)), y(sw_t(P)), P'];
-    x_s{i} = [t(sw_t(P)), x(sw_t(P)), P'];
-    Samp_Cy(i) = length(P);
-    cy_avg(i) = mean(y(sw_t));  cx_avg(i) = mean(x(sw_t));
+    y_c{i} = [t(sw_t), y(sw_t)]; y_s{i} = [y_c{i}(P,1), y_c{i}(P,2)];
+    x_c{i} = [t(sw_t), x(sw_t)]; x_s{i} = [x_c{i}(P,1), x_c{i}(P,2)];
+    yN{i} = [t(sw_t), y(sw_t)./avgProf]; yNs{i} = [yN{i}(P,1), yN{i}(P,2)];
+    Samp_Cy(i) = length(P); cy_avg(i) = mean(y(sw_t)); cx_avg(i) = mean(x(sw_t));
     sw_t = sw_t + samples;
 end
+%%
+% close all
+% plot(y_c{i}(:,1), y_c{i}(:,2)), hold on;
+% plot(y_s{i}(:,1), y_s{i}(:,2),'o')
+% plot(yN{i}(30:end,1), yN{i}(30:end,2))
+% plot(yNs{i}(2:end,1), yNs{i}(2:end,2),'*')
 
-switched.y = y_c;   switched.y_s = y_s;
-switched.x = x_c;   switched.x_s = x_s;
+%%
+switched.y = y_c; switched.y_s = y_s;
+switched.x = x_c; switched.x_s = x_s;
+switched.Norm.y = yN; switched.Norm.y_s = yNs;
 s_info.Samp_Cy = Samp_Cy;
 s_info.N_cycles = N_cycles;
 s_info.t_wholeCy = t_wholeCy;
 s_info.y_mean = mean(cy_avg);   s_info.x_mean = mean(cx_avg);
 
+%% Estatísticas do sinal
 for i = 1 : N_cycles
-    ys_cur = y_s{i};    xs_cur = x_s{i};
+    ys_cur = y_s{i}; xs_cur = x_s{i};
     ymod(i) = mean(abs(ys_cur(:,2) - s_info.y_mean));
     xmod(i) = mean(abs(xs_cur(:,2) - s_info.x_mean));
 end
-s_info.y_mod = mean(ymod);      s_info.x_mod = mean(xmod);
+s_info.y_mod = mean(ymod); s_info.x_mod = mean(xmod);
 
 for i = 1 : N_cycles
-    ys_cur = y_s{i};    xs_cur = x_s{i};
-    ys_cur = ys_cur(:,2); xs_cur = xs_cur(:,2);
+    ys_cur = y_s{i}; xs_cur = x_s{i}; yNs_cur = yNs{i};
+    ys_cur = ys_cur(:,2); xs_cur = xs_cur(:,2); yNs_cur = yNs_cur(:,2);
     xpos = xs_cur >= s_info.x_mean; xs_cur(xpos) = s_info.x_mean + s_info.x_mod;
-    ypos = ys_cur >= s_info.y_mean; ys_cur(ypos) = s_info.y_mean + s_info.y_mod;
     xneg = xs_cur < s_info.x_mean; xs_cur(xneg) = s_info.x_mean - s_info.x_mod;
+    ypos = ys_cur >= s_info.y_mean; ys_cur(ypos) = s_info.y_mean + s_info.y_mod;
     yneg = ys_cur < s_info.y_mean; ys_cur(yneg) = s_info.y_mean - s_info.y_mod;
-    ys_cur2 = y_s{i}; ys_slice{i} = [ys_cur2(:,1) ys_cur ys_cur2(:,3)];
-    xs_cur2 = x_s{i}; xs_slice{i} = [xs_cur2(:,1) xs_cur xs_cur2(:,3)];
+    yNpos = yNs_cur >= s_info.y_mean; yNs_cur(yNpos) = s_info.y_mean + s_info.y_mod;
+    yNneg = yNs_cur < s_info.y_mean; yNs_cur(yNneg) = s_info.y_mean - s_info.y_mod;
+    ys_slice{i} = [y_s{i}(:,1), ys_cur];
+    xs_slice{i} = [x_s{i}(:,1), xs_cur];
+    yNs_slice{i} = [yNs{i}(:,1), yNs_cur];
 end
 switched.ys_slice = ys_slice;
 switched.xs_slice = xs_slice;
+switched.Norm.ys_slice = yNs_slice;
 end
