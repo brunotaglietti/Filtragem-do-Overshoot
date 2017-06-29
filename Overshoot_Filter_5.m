@@ -9,7 +9,7 @@ end
 [tech, bits, vars] = char_config(charinfo.cur,charinfo.deg); bias = vars.bias; deg = vars.deg;
 eF = {'s', 'w', 'w2', 'rls', 'rls2'}; M = zeros(length(deg),length(bias));
 for i=1:length(eF), eF{2,i} = M; end;
-mse_char = struct(eF{:}); ber = struct(eF{:}); clear M i eFields;
+mse_char = struct(eF{:}); ber = struct(eF{:}); clear M i eF;
 %% Processing
 t_start = tic;
 for B = 1:length(bias)
