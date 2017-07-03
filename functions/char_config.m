@@ -84,7 +84,7 @@ kb.Position = [80 panel.Position(4)-150 80 80];
 
 kbItems = cell(1,length(bias)); kbItemsData = kbItems;
 for i = 1:length(bias), kbItems{i} = num2str(bias(i)*1e3); kbItemsData{i} = bias(i); end
-kb.Items = kbItems; kb.ItemsData = kbItemsData; kb.Value = 0.08;
+kb.Items = kbItems; kb.ItemsData = kbItemsData; kb.Value = 0.1;
 
 uilabel(panel, 'Position', [kb.Position(1:2)+[0 110], 150, 20],...
     'fontweight','bold','Text', 'SOA bias (mA)');

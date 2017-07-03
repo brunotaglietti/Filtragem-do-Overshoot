@@ -10,6 +10,7 @@ charinfo.deg = (0.0:0.3:1.2);           % Amplitude do degrau em X.XXV
 cur = charinfo.cur; deg = charinfo.deg;
 direc_root = ['E:\Projetos Colaborativos\chav-amo-SOA-prbs\',...
     charinfo.SOA, '\', charinfo.span, '\'];
+charinfo.root = direc_root;
 strend = ['-mod' sprintf('%.0f',charinfo.modV*1e3),...
     'mV-pinpd-var-pinsoa' num2str(charinfo.pinsoa) 'dbm'];
 

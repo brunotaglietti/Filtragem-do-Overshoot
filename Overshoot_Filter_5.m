@@ -1,10 +1,10 @@
 close all; clc;
-addpath('functions', 'plots'); global fignum;
+addpath('functions', 'plots'); global fignum Path;
 
 %% UI Configuration and Memory Allocation
 if ~exist('charinfo','var')
-    [FileName,PathName, ~] = uigetfile('E:\Projetos Colaborativos\chav-amo-SOA-prbs\CIP-L\');
-    load([PathName FileName]); charinfo.Path = PathName; clear FileName PathName;
+    [FileName,Path, ~] = uigetfile('E:\Projetos Colaborativos\chav-amo-SOA-prbs\CIP-L\');
+    load([Path FileName]); clear FileName;
 end
 [tech, bits, vars] = char_config(charinfo.cur,charinfo.deg); bias = vars.bias; deg = vars.deg;
 eF = {'s', 'w', 'w2', 'rls', 'rls2'}; M = zeros(length(deg),length(bias));
@@ -27,12 +27,12 @@ end
 close all; fignum = 1;
 if length(deg) == 1 && length(bias) == 1, NE = 0;
 errorDistPlot(s_info, errors);
-% for n = 1:s_info.N_cycles
-%     if NE < sum([errors.s{n}]), NE = sum([errors.s{n}]);
-%         cyPlot(signal, switched, s_info, yout, n, errors);
-%         waitforbuttonpress;
-%     end
-% end
+for n = 1:s_info.N_cycles
+    if NE < sum([errors{1}.s{n}]), NE = sum([errors{1}.s{n}]);
+        cyPlot(signal, switched, s_info, yout, n, errors);
+        waitforbuttonpress;
+    end
+end
 elseif length(deg) == 1 && length(bias) > 1, bias_plot(bias, mse_char, 'MSE');
 elseif length(deg) > 1, VIplot(bias, deg, mse_char, 'MSE', [0 1]);
     VIplot(bias, deg, ber, 'BER',[-3 -1]);
