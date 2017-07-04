@@ -12,9 +12,10 @@ if exist('rls_info','var')
 end
 Rx = zeros(s_info.N_cycles,M); Pxd = Rx;
 Rx2 = zeros(s_info.N_cycles,M2); Pxd2 = Rx2;
+start = 5;
 for n = 1:s_info.N_cycles
-    ys = y_s{n};       ys = (ys(:,2) - s_info.y_mean)/s_info.y_mod;
-    xs = xs_slice{n};  xs = (xs(:,2) - s_info.x_mean)/s_info.x_mod;
+    ys = y_s{n};       ys = (ys(start:end,2) - s_info.y_mean)/s_info.y_mod;
+    xs = xs_slice{n};  xs = (xs(start:end,2) - s_info.x_mean)/s_info.x_mod;
     R = mXcor(ys, M);           Rx(n,:) = R(1,:);
     R2 = mXcor(ys, M2);         Rx2(n,:) = R2(1,:);
     Pxd(n,:) = mXcor(ys, xs, M);

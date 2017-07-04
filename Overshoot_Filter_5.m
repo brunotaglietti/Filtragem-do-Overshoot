@@ -1,5 +1,5 @@
 close all; clc;
-addpath('functions', 'plots'); global fignum Path;
+addpath('functions', 'plots');
 
 %% UI Configuration and Memory Allocation
 if ~exist('charinfo','var')
@@ -24,14 +24,16 @@ end
 end
 
 %% PLOTS
-close all; fignum = 1;
-if length(deg) == 1 && length(bias) == 1, NE = 0;
+% close all; fignum = 1;
+if length(deg) == 1 && length(bias) == 1, NE = zeros(s_info.N_cycles,1);
 errorDistPlot(s_info, errors);
+
 for n = 1:s_info.N_cycles
-    if NE < sum([errors{1}.s{n}]), NE = sum([errors{1}.s{n}]);
-        cyPlot(signal, switched, s_info, yout, n, errors);
-        waitforbuttonpress;
-    end
+    NE(n) = sum([errors{1}.w2{n}(5:end-5)]) - sum([errors{1}.s{n}(5:end-5)]);
+%     if NE < sum([errors{1}.s{n}]), NE = sum([errors{1}.s{n}]);
+%         cyPlot(signal, switched, s_info, yout, n, errors);
+%         waitforbuttonpress;
+%     end
 end
 elseif length(deg) == 1 && length(bias) > 1, bias_plot(bias, mse_char, 'MSE');
 elseif length(deg) > 1, VIplot(bias, deg, mse_char, 'MSE', [0 1]);

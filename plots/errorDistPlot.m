@@ -15,7 +15,7 @@ for N = 1:length(errors)
 end
 %%
 
-maxGI = 25; endcrop = 0;
+maxGI = 25; endcrop = 5;
 M = zeros(1,maxGI+1);
 eFalloc = eFields; for i=1:length(eFields), eFalloc{2,i} = M; end
 GIerror = struct(eFalloc{:}); clear M eFalloc i;

@@ -6,7 +6,7 @@
 function cyPlot(signal, switched, s_info, yout, n, errors)
 fprintf('Cycle plot.\n');
 %% Loading and preparing data
-global fignum;
+% global fignum;
 y = switched.y{n};
 ys = switched.y_s{n};
 yN = switched.Norm.y{n}; yNs = switched.Norm.y_s{n};
@@ -18,8 +18,8 @@ y_sec = (y(:,2) - s_info.y_mean)/s_info.y_mod;
 ys_sec = (ys(:,2) - s_info.y_mean)/s_info.y_mod;
 range = s_info.t_wholeCy{n}; L = length(range);
 range = range(round(L/5):round(L*4/5));
-section = length(yout.w{n});
-t_s = ys(1:section,1);
+% section = length(yout.w{n});
+t_s = ys(:,1);
 %% Plot including off-switch signal
 % eval([sprintf('fig%i',fignum) ' = anotherfig;'])
 
@@ -45,7 +45,7 @@ plot(x_axis, s_info.y_mean*[1 1],'--','color',.8*ones(1,3))
 plot(x_axis, s_info.y_mean - s_info.y_mod*[1 1],'--','color',.8*ones(1,3))
 plot(x_axis, s_info.y_mean + s_info.y_mod*[1 1],'--','color',.8*ones(1,3))
 plot(ys(1,1)*[1 1], y_axis, '--', 'color', .8*[1 1 1]);
-plot(ys(section,1)*[1 1], y_axis,'--', 'color', .8*[1 1 1]);
+plot(ys(end,1)*[1 1], y_axis,'--', 'color', .8*[1 1 1]);
 xlabel('Time (s)'), ylabel('Step (V)'), xlim(x_axis), ylim(y_axis);
 legend('Normalized Signal', 'Electrical Reference', 'Off-switch', 'On-switch',...
     'Samples', 'Decision Driven', 'Sliced Electrical Samples')
@@ -53,11 +53,11 @@ hold off;
 %% Plot focused in the filter output and error
 % eval([sprintf('fig%i',fignum) ' = anotherfig;'])
 figfilt = figure;
-set(figfilt,'windowstyle','normal', 'Position', [100, 100, 550, 550])
+set(figfilt,'windowstyle','normal', 'Position', [100, 100, 1200, 800])
 set(gca, 'FontName', 'Times New Roman','FontSize',12)
 fig_prop = {'linewidth', 2, 'markersize', 10};
 subplot(3,1,[1, 2]);
-t_s = 1e6*ys(1:section,1);
+t_s = 1e6*ys(:,1);
 plot(1e6*y(:,1), y_sec,'color',.6*ones(1,3)); hold on
 h1 = plot(t_s, (ydd(:,2)-s_info.y_mean)/s_info.y_mod,'.', 'color', .7*[1 1 1]);
 h2 = plot(t_s, (xdd(:,2)-s_info.y_mean)/s_info.y_mod,'o', 'color', .7*[1 1 1]);
