@@ -20,7 +20,7 @@ for k = [1 2 6 7]
 end
 if exist('errors','var')
     plot(switched.y_s{n}(find(errors{1}.s{n}),1),...
-        switched.ys_slice{n}(find(errors{1}.s{n}),1),'rx', 'linewidth', 1.5);
+        switched.y_s{n}(find(errors{1}.s{n}),2),'rx', 'linewidth', 1.5);
 end
 
 x_axis = [signal.t(range(1)) signal.t(range(end))];
@@ -32,10 +32,11 @@ plot(x_axis, s_info.y_mean + s_info.y_mod*[1 1],'--','color',.8*ones(1,3))
 plot(switched.y_s{n}(1,1)*[1 1], y_axis, '--', 'color', .8*[1 1 1]);
 plot(switched.y_s{n}(end,1)*[1 1], y_axis, '--', 'color', .8*[1 1 1]);
 xlabel('Time (s)'), ylabel('Step (V)'), xlim(x_axis), ylim(y_axis);
-% cont = {'PD output',
-
+cont = {'Generetor reference', 'PD output', 'Normalization', 'Switch on',...
+        'Sampled signal', 'Sliced samples', 'Reference samples'};
+legend(cont)
 %%
-f2 = figure;
+f2 = figure('windowstyle', 'normal', 'Position', [100, 100, 550, 550]);
 
 % set(gca,'windowstyle','normal', 'Position', [100, 100, 550, 550])
 % set(gca, 'FontName', 'Times New Roman','FontSize',12)
@@ -46,7 +47,7 @@ plot(switched.y{n}(:,1),(switched.y{n}(:,2) - s_info.y_mean)/s_info.y_mod,...
 clear pConf; pConf = {'.', 'color', .4*[1 1 1], fig_prop{:};...
                       '.', 'color', .7*[1 1 1], fig_prop{:};...
                       'o', 'color', .7*[1 1 1], fig_prop{:}}; i=1;
-% ax = gca; ax.ColorOrderIndex = 1;
+
 for k = [2 6 7]
     t = switched.(eF{k}){n}(:,1);
     if k == 7, y = (switched.(eF{k}){n}(:,2) - s_info.x_mean)/s_info.x_mod;
@@ -54,3 +55,30 @@ for k = [2 6 7]
     end
     plot(t, y, pConf{i,:}); i=i+1;
 end
+ts = switched.(eF{2}){n}(:,1);
+yF = fieldnames(yout);
+ax = gca; ax.ColorOrderIndex = 1;
+for k = 1:4
+    ys = yout.(yF{k}){n};
+    plot(ts, ys, '.', fig_prop{:})
+end
+if exist('errors','var')
+t = switched.y_s{n}(find(errors{1}.s{n}),1);
+y = (switched.y_s{n}(find(errors{1}.s{n}),2) - s_info.y_mean)/s_info.y_mod;
+plot(t, y,'x', fig_prop{:}, 'color', .4*[1 1 1]);
+ax = gca; ax.ColorOrderIndex = 1;
+for k = 1:4
+    et = ts(find(errors{1}.(yF{k}){n}));
+    es = yout.(yF{k}){n}(find(errors{1}.(yF{k}){n}));
+    plot(et, es, 'x', fig_prop{:})
+end
+end
+cont2 = {'PD output', 'Samples', 'Sliced samples', 'Reference', yF{1:4}};
+legend(cont2)
+set(gca,'xticklabel',[])
+
+subplot(3,1,3)
+for k = 5:9
+    plot(ts,yout.(yF{k}){n},'-o'), hold on
+end
+legend(yF{5:9})

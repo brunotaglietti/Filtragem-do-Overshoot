@@ -15,7 +15,7 @@ for B = 1:length(bias)
 for V = 1:length(deg)
     cur_var = [bias(B), deg(V), deg(V), bits];
     signal = syncd_import(charinfo,cur_var,tech); % Import
-    [switched, s_info] = sw_cycle(signal); % Cycle cropping
+    [switched, s_info] = sw_cycle(signal); clear signal; % Cycle cropping
     [yout, mse_char(V,B), ber(V,B), errors{1}] = sw_filter(switched.y_s, switched.xs_slice, s_info);
     [~, ~, ~, errors{2}] = sw_filter(switched.Norm.y_s, switched.xs_slice, s_info);
     toc(t_start);
