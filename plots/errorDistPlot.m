@@ -2,7 +2,7 @@ function errorDistPlot(s_info, errors)
 fprintf('Guard-Interval Analysis and plot.\n')
 %%
 eFields = fieldnames(errors{1})';
-close all; figure;
+figure;
 errorDist = zeros(1,max(s_info.Samp_Cy));
 for N = 1:length(errors)
     for f = 1:length(eFields)

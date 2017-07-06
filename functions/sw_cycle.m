@@ -26,7 +26,6 @@ samples = round(pulselength*2*fs);
 opt_ch = size(signal.y,2);
 y = signal.y(:,opt_ch);   t = signal.t(:,opt_ch);
 x = signal.y(:,1);
-
 N_cycles = floor(length(y) / samples);
 y_avg = zeros(samples,1);
 if N_cycles > 1000, last_cycle = 1000; else, last_cycle = N_cycles; end

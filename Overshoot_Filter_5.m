@@ -15,7 +15,7 @@ for B = 1:length(bias)
 for V = 1:length(deg)
     cur_var = [bias(B), deg(V), deg(V), bits];
     signal = syncd_import(charinfo,cur_var,tech); % Import
-    [switched, s_info] = sw_cycle(signal); clear signal; % Cycle cropping
+    [switched, s_info] = sw_cycle(signal); % Cycle cropping
     [yout, mse_char(V,B), ber(V,B), errors{1}] = sw_filter(switched.y_s, switched.xs_slice, s_info);
     [~, ~, ~, errors{2}] = sw_filter(switched.Norm.y_s, switched.xs_slice, s_info);
     toc(t_start);
@@ -23,7 +23,7 @@ end
 end
 
 %% PLOTS
-% close all; fignum = 1;
+% close all;
 if length(deg) == 1 && length(bias) == 1, NE = zeros(s_info.N_cycles,1);
     errorDistPlot(s_info, errors);
     for n = 1:s_info.N_cycles
@@ -31,6 +31,6 @@ if length(deg) == 1 && length(bias) == 1, NE = zeros(s_info.N_cycles,1);
     end
     [~,n] = max(NE); cyPlot(signal, switched, s_info, yout, n, errors);
 elseif length(deg) == 1 && length(bias) > 1, bias_plot(bias, mse_char, 'MSE');
-elseif length(deg) > 1, VIplot(bias, deg, mse_char, 'MSE', [0 1]);
-    VIplot(bias, deg, ber, 'BER',[-3 -1]);
+elseif length(deg) > 1, VIplot(bias, deg, mse_char, 'MSE');
+    VIplot(bias, deg, ber, 'BER');
 end
