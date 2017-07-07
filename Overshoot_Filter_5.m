@@ -27,7 +27,7 @@ end
 if length(deg) == 1 && length(bias) == 1, NE = zeros(s_info.N_cycles,1);
     errorDistPlot(s_info, errors);
     for n = 1:s_info.N_cycles
-        NE(n) = sum(errors{1}.w{n}(5:end-5)) - sum(errors{1}.s{n}(5:end-5));
+        NE(n) = sum(errors{1}.s{n}(1+5:end-5)) - sum(errors{1}.w{n}(1+5:end-5));
     end
     [~,n] = max(NE); cyPlot(signal, switched, s_info, yout, n, errors);
 elseif length(deg) == 1 && length(bias) > 1, bias_plot(bias, mse_char, 'MSE');
