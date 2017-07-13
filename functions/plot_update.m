@@ -2,10 +2,10 @@
 % As informações de entrada devem estar no formato: "objeto 1, dados 1,
 % objeto 2, dados 2...".
 
-function plot_update(varargin)
+function plot_update(handle,data)
 for n = 1:2:nargin
-    handle = varargin{n};
-    data = varargin{n+1};
+%     handle = varargin{n};
+%     data = varargin{n};
     if size(data,2) == 1
         set(handle,'YData',data)
     elseif size(data,2) == 2

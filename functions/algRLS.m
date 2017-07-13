@@ -20,7 +20,7 @@ if size(Mi,1) ~= 1, Wi = Mi; M = size(Mi,1);
 else, M = Mi; Wi = zeros(M,1); end
 switch nargin
     case 3
-        lambda = 0.9;
+        lambda = 0.97;
         alpha = 0;
         delta = sum(x.^2)/T;
     case 4

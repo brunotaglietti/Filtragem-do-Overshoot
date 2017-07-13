@@ -1,22 +1,23 @@
 function errorDistPlot(s_info, errors, pTitle)
 fprintf('Guard-Interval Analysis and plot.\n')
-%%
 if length(errors) == 1,  eFields = fieldnames(errors)';
 else, eFields = fieldnames(errors{1})'; end
-% if exist('pTitle','var'), figure('name', pTitle);
-% else, figure; end
-% errorDist = zeros(1,max(s_info.Samp_Cy));
-% for N = 1:length(errors)
-%     if length(errors)>1, cE = errors{N}; else, cE = errors; end
-%     for f = 1:length(eFields)
-%         for k = 1:s_info.N_cycles
-%             curL = length(cE.(eFields{f}){k});
-%             errorDist(1:curL) = errorDist(1:curL) + cE.(eFields{f}){k};
-%         end
-%         subplot(length(errors),length(eFields), (f + (N-1)*length(eFields)))
-%         bar(errorDist), title(eFields{f});
-%     end
-% end
+
+%%
+if exist('pTitle','var'), figure('name', pTitle);
+else, figure; end
+errorDist = zeros(1,max(s_info.Samp_Cy));
+for N = 1:length(errors)
+    if length(errors)>1, cE = errors{N}; else, cE = errors; end
+    for f = 1:length(eFields)
+        for k = 1:s_info.N_cycles
+            curL = length(cE.(eFields{f}){k});
+            errorDist(1:curL) = errorDist(1:curL) + cE.(eFields{f}){k};
+        end
+        subplot(length(errors),length(eFields), (f + (N-1)*length(eFields)))
+        bar(errorDist), title(eFields{f});
+    end
+end
 %%
 maxGI = 25; endcrop = 5;
 M = zeros(1,maxGI+1);
@@ -36,8 +37,8 @@ for N = 1:length(errors)
             (sum(s_info.Samp_Cy)-GI*s_info.N_cycles);
         end
         LGIerror = GIerror.(eFields{f});
-%         if LGImin > min(LGIerror(LGIerror~=-Inf)), LGImin = min(LGIerror(LGIerror~=-Inf)); end
-        LGIerror(LGIerror==-Inf) = -100;
+        if LGImin > min(LGIerror(LGIerror~=0)), LGImin = min(LGIerror(LGIerror~=-Inf)); end
+%         LGIerror(LGIerror==-Inf) = -100;
         plot(0:maxGI,LGIerror,plotStyle{N,:}), hold on; %ylim([LGImin -1]);
         xlabel('Guard-Interval'), ylabel('BER'); set(gca, 'YScale', 'log')
         if exist('pTitle','var'), title(upper(pTitle)); end

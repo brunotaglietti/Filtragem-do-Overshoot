@@ -1,18 +1,34 @@
 clear all; clc
 
+spans = {'B2B', 'SSMF', 'NZD_25', 'NZD_50', 'NZD_75',...
+    'NZD_25_DC', 'NZD_50_DC', 'NZD_75_DC'};
+sw_mode = {'Steady', 'Switched'};
+
+for Fiber = 1:length(spans)
+for SW = 1:length(sw_mode)
+
+charinfo.span = [spans{Fiber} '\' sw_mode{SW}];
+charinfo.sw_period = 2*100/12.5e9;
+charinfo.fmod = 6.9994e9;
+charinfo.pinpd = 'var';
 charinfo.pinsoa = -6;
 charinfo.modV = 1;
 charinfo.SOA = 'CIP-L';
-charinfo.span = 'syncd';
-charinfo.cur = (0.060:0.020:0.140);     % Corrente de polarização em X.XXXA
-charinfo.deg = (0.0:0.3:1.2);           % Amplitude do degrau em X.XXV
-% imp = (0.00:0.30:1.20);                              % Amplitude do impulso em X.XXV
+charinfo.cur = (0.080:0.020:0.120);
+charinfo.deg = 1.2;
+charinfo.imp = 1.2;
+
 cur = charinfo.cur; deg = charinfo.deg;
-direc_root = ['E:\Projetos Colaborativos\chav-amo-SOA-prbs\',...
+direc_root = ['E:\Projetos Colaborativos\chav-amo-SOA-prbs-testes\',...
     charinfo.SOA, '\', charinfo.span, '\'];
 charinfo.root = direc_root;
-strend = ['-mod' sprintf('%.0f',charinfo.modV*1e3),...
-    'mV-pinpd-var-pinsoa' num2str(charinfo.pinsoa) 'dbm'];
+
+if ~exist('direc_root', 'dir'), mkdir(direc_root); end
+save([direc_root 'charinfo.mat'],'charinfo');
+
+strend = ['-mod' sprintf('%.0f',charinfo.modV*1e3) 'mV-',...
+    'pinpd-' charinfo.pinpd,...
+    '-pinsoa' num2str(charinfo.pinsoa) 'dbm'];
 
 method = {'step-','pisic-','misic-'};
 for k = 1:length(method)
@@ -21,21 +37,19 @@ strcall = method{k};
 tim = bits/12.5;
 
 direc = [direc_root strcall sprintf('%i',bits) '\'];
-if strcmp(strcall(1:4),'step')
+if strcmpi(sw_mode{SW},'Steady')
+    imp = 0; tim = 0; strcall = []; direc = [direc_root '\'];
+elseif strcmpi(strcall(1:4),'step')
     imp = 0; tim = 0; direc = [direc_root 'step' '\'];
 end
 for i = 1:length(cur)
-    aux2 = sprintf('%.0fmA',cur(i)*1e3);
-    if ~exist([direc 'dados/' aux2], 'dir'), mkdir([direc 'dados/' aux2]); end
-    if ~exist([direc 'figs/' aux2], 'dir'), mkdir([direc 'figs/' aux2]); end
+    if ~exist([direc 'dados/'], 'dir'), mkdir([direc 'dados/']); end
+    if ~exist([direc 'figs/'], 'dir'), mkdir([direc 'figs/']); end
     for j = 1:length(tim)
        for m = 1:length(deg)
-%            for n = 1:length(imp)
-%                aux1 = sprintf('i%1.3fA-t%1.2fns-deg%1.2fV-imp%1.2fV',cur(i),tim(j),deg(m),imp(n));
-               aux1 = sprintf('i%1.3fA-t%1.2fns-deg%1.2fV-imp%1.2fV',cur(i),tim(j),deg(m),deg(m));
-               file = fopen([direc 'dados\' aux2 '\' strcall aux1 strend '.h5'],'w');
-               file = fopen([direc 'figs\' aux2 '\' strcall aux1 strend '.png'],'w');
-%            end
+           aux1 = sprintf('i%1.3fA-t%1.2fns-deg%1.2fV-imp%1.2fV',cur(i),tim(j),deg(m),imp);
+           file = fopen([direc 'dados\' strcall aux1 strend '.h5'],'w');
+           file = fopen([direc 'figs\' strcall aux1 strend '.png'],'w');
        end
     end
 end
@@ -43,4 +57,6 @@ end
 fclose('all');
 end
 end
-save([direc_root 'charinfo.mat'],'charinfo');
+
+end
+end
