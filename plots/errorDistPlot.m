@@ -1,7 +1,7 @@
 function errorDistPlot(s_info, errors, pTitle)
 fprintf('Guard-Interval Analysis and plot.\n')
 if length(errors) == 1,  eFields = fieldnames(errors)';
-else eFields = fieldnames(errors{1})'; end
+else, eFields = fieldnames(errors{1})'; end
 
 %%
 % if exist('pTitle','var'), figure('name', pTitle);
@@ -24,7 +24,7 @@ M = zeros(1,maxGI+1);
 eFalloc = eFields; for i=1:length(eFields), eFalloc{2,i} = M; end
 GIerror = struct(eFalloc{:}); clear M eFalloc i;
 figure;
-LGImin = 0; plotStyle = {'--o', 'linewidth',2; '-+','linewidth',1};
+LGImin = 0; plotStyle = {'-o', 'linewidth',2; '-+','linewidth',1};
 for N = 1:length(errors)
     if length(errors)>1, cE = errors{N}; else, cE = errors; end
     for f = 1:length(eFields)
@@ -48,7 +48,7 @@ end
 if length(errors)>1
 eNormLeg = eFields; for N = 1:length(eFields), eNormLeg{N} = ['Norm ' eFields{N}]; end
 content = {eFields, eNormLeg}; legend([content{:}]), grid on
-else legend(eFields), grid on
+else, legend(eFields), grid on
 end
 
 end

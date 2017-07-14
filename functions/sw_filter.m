@@ -42,7 +42,7 @@ for n = 1:s_info.N_cycles
     yw{n} = filter(w,1,ys);
     yw2{n} = filter(w2,1,ys);
     
-    [~, ~, yrls{n}] = algRLS(ys,xs,w);     % wrls = w_rls(:,end);
+    [~, ~, yrls{n}] = algRLS(ys,xs,w); % wrls = w_rls(:,end);
     [~, ~, yrls2{n}] = algRLS(ys, xs, w2);
     
     se{n} = (ys - xs).^2; me(n) = mean(se{n});
@@ -84,4 +84,32 @@ ber.w = sum([berw{:}])/sum(sections(:));
 ber.w2 = sum([berw2{:}])/sum(sections(:));
 ber.rls = sum([berrls{:}])/sum(sections(:));
 ber.rls2 = sum([berrls2{:}])/sum(sections(:));
+end
+
+
+function [yout, regMSE, ber, errors] = regFilter(y_s, x_s)
+%% Normalize signals
+ys = (y_s(:,2) - mean(y_s(:,2)))/sqrt(mean(y_s(:,2).^2));
+xs = (x_s(:,2) - mean(x_s(:,2)))/sqrt(mean(x_s(:,2).^2));
+yout.y = ys; yout.ySl = sign(ys);
+yout.x = xs; yout.xSl = sign(xs);
+% stem(ys(1:100))
+%%
+M = 2; M2 = 4;
+R = mXcor(ys, M); Pxd = mXcor(ys, xs, M);
+R2 = mXcor(ys, M2); Pxd2 = mXcor(ys, xs, M2);
+w = R\Pxd; w2 = R2\Pxd2;
+
+yout.w = filter(w,1,ys);
+yout.w2 = filter(w2,1,ys);
+[~,~, yout.rls] = algRLS(ys, xs, w);
+[~,~, yout.rls2] = algRLS(ys, xs, w2);
+
+yout.e = (ys - xs).^2;  regMSE.s = mean(yout.e);
+yout.ew = (yout.w - xs).^2; regMSE.w = mean(yout.ew);
+yout.ew2 = (yout.w2 - xs).^2; regMSE.w2 = mean(yout.ew2);
+yout.erls = (yout.rls - xs).^2; regMSE.rls = mean(yout.erls);
+yout.erls2 = (yout.rls2 - xs).^2; regMSE.rls2 = mean(yout.erls2);
+
+% STORE ERRORS AND BER
 end

@@ -3,6 +3,7 @@ clear all; clc
 spans = {'B2B', 'SSMF', 'NZD_25', 'NZD_50', 'NZD_75',...
     'NZD_25_DC', 'NZD_50_DC', 'NZD_75_DC'};
 sw_mode = {'Steady', 'Switched'};
+% WHEN CREATING STEADY FILES, TECHNIQUE SHOULDNT BE IN THE NAME, PUT STEADY INSTEAD.
 
 for Fiber = 1:length(spans)
 for SW = 1:length(sw_mode)
