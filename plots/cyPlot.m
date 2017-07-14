@@ -31,8 +31,8 @@ for k = [1 2 6 7]
     plot(t, y, pConf{i,:}), i = i + 1;
 end
 if exist('errors','var')
-    plot(switched.y_s{n}(find(errors{1}.s{n}),1),...
-        switched.y_s{n}(find(errors{1}.s{n}),2),'rx', 'linewidth', 1.5);
+    plot(switched.y_s{n}(find(errors.s{n}),1),...
+        switched.y_s{n}(find(errors.s{n}),2),'rx', 'linewidth', 1.5);
 end
 
 y_axis = 3*s_info.y_mod*[-1 1] + s_info.y_mean;
@@ -72,13 +72,13 @@ for k = filters
     plot(ts, ys, '.', fig_prop{:})
 end
 if exist('errors','var')
-t = switched.y_s{n}(find(errors{1}.s{n}),1);
-y = (switched.y_s{n}(find(errors{1}.s{n}),2) - s_info.y_mean)/s_info.y_mod;
+t = switched.y_s{n}(find(errors.s{n}),1);
+y = (switched.y_s{n}(find(errors.s{n}),2) - s_info.y_mean)/s_info.y_mod;
 plot(t, y,'x', fig_prop{:}, 'color', .4*[1 1 1]);
 ax = gca; ax.ColorOrderIndex = 1;
 for k = filters
-    et = ts(find(errors{1}.(yF{k}){n}));
-    es = yout.(yF{k}){n}(find(errors{1}.(yF{k}){n}));
+    et = ts(find(errors.(yF{k}){n}));
+    es = yout.(yF{k}){n}(find(errors.(yF{k}){n}));
     plot(et, es, 'x', fig_prop{:})
 end
 end

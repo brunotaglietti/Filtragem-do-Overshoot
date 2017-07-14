@@ -2,14 +2,13 @@ addpath('functions', 'plots');
 
 %% UI Configuration and Memory Allocation
 if ~exist('charinfo','var')
-    Meas_path = 'C:\Users\Bruno\Documents\Projetos Colaborativos\Measurements';
+    Meas_path = 'E:\Projetos Colaborativos\chav-amo-SOA-prbs\CIP-L\SSMF\Switched\';
     [FileName,Path, ~] = uigetfile(Meas_path);
     load([Path FileName]); clear FileName;
 end
-% [tech, bits, vars] = char_config(charinfo.cur,charinfo.deg); bias = vars.bias; deg = vars.deg;
-tech = 'pisic'; bits = 4;
-bias = 0.12;
-deg = 1.2;
+[tech, bits, vars] = char_config(charinfo.cur,charinfo.deg); bias = vars.bias; deg = vars.deg;
+% tech = 'pisic'; bits = 4;
+% bias = 0.12; deg = 1.2;
 eF = {'s', 'w', 'w2', 'rls', 'rls2'}; M = zeros(length(deg),length(bias));
 for i=1:length(eF), eF{2,i} = M; end;
 mse_char = struct(eF{:}); ber = struct(eF{:}); errors = cell(1,2); clear M i eF;
@@ -31,9 +30,10 @@ end
 if length(deg) == 1 && length(bias) == 1, NE = zeros(s_info.N_cycles,1);
     errorDistPlot(s_info, errors);
     for n = 1:s_info.N_cycles
-        NE(n) = sum(errors{1}.s{n}(1+5:end-5)) - sum(errors{1}.w{n}(1+5:end-5));
+        if length(errors)>1, cE = errors{1}; else, cE = errors; end
+        NE(n) = sum(cE.s{n}(1+5:end-5)) - sum(cE.w{n}(1+5:end-5));
     end
-    [~,n] = max(NE); cyPlot(signal, switched, s_info, yout, n, errors);
+    [~,n] = max(NE); cyPlot(signal, switched, s_info, yout, n, cE);
 elseif length(deg) == 1 && length(bias) > 1, bias_plot(bias, mse_char, 'MSE');
 elseif length(deg) > 1, VIplot(bias, deg, mse_char, 'MSE');
     VIplot(bias, deg, ber, 'BER');
