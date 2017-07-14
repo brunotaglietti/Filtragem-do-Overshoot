@@ -13,13 +13,13 @@ if strcmpi(charinfo.span(1:4),'sync')
     if strcmpi(tech(1:4),'step')
         techdir = [tech sprintf('\\dados\\%imA\\', int16(cur_var(4)))];
         imp_time = 0;
-    else, techdir = [tech sprintf('-%i\\dados\\%imA\\', int16(cur_var(4)), int16(cur_var(1)))];
+    else techdir = [tech sprintf('-%i\\dados\\%imA\\', int16(cur_var(4)), int16(cur_var(1)))];
     end
 else
     if strcmpi(tech(1:4),'step')
         techdir = [tech '\\dados\\'];
         imp_time = 0;
-    else, techdir = [tech sprintf('-%i\\dados\\', int16(cur_var(4)))];
+    else techdir = [tech sprintf('-%i\\dados\\', int16(cur_var(4)))];
     end
 end
 dir_meas = [charinfo.root  techdir];
