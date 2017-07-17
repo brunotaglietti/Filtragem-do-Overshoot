@@ -7,40 +7,7 @@
 function [signal] = soah5import(charinfo, cur_var, tech)
 fprintf(['\nLoading ' strrep(charinfo.span, '\', ' ') ' file for ',...
     sprintf('%.0fmA and %.1fV.\n',1e3*cur_var(1), cur_var(2))]);
-%%
-bias = cur_var(1);
-deg = cur_var(2);
-if strcmpi(charinfo.span(1:4),'sync')
-    if strcmpi(tech(1:4),'step')
-        imp = 0;
-        imp_time = 0;
-        techdir = [tech sprintf('\\dados\\%imA\\', int16(cur_var(4)))];
-    else
-        imp = cur_var(3);
-        imp_time = cur_var(4)*8;
-        techdir = [tech sprintf('-%i\\dados\\%imA\\', int16(cur_var(4)), int16(1e3*bias))];
-    end
-elseif strcmpi(tech, 'Steady')
-    imp = 0;
-    imp_time = 0;
-    techdir = 'dados\';
-else
-    if strcmpi(tech(1:4),'step')
-        imp = 0;
-        imp_time = 0;
-        techdir = [tech '\\dados\\'];
-    else
-        imp = cur_var(3);
-        imp_time = cur_var(4)*8;
-        techdir = [tech sprintf('-%i\\dados\\', int16(cur_var(4)))];
-    end
-end
-dir_meas = [charinfo.root  techdir];
-Pin = ['pinsoa' num2str(charinfo.pinsoa) 'dbm'];
-name_eval = ['i0.%03iA-t0.%02dns-deg%1.2fV-imp%1.2fV-mod',...]
-    sprintf('%.0f',charinfo.modV*1e3) 'mV-pinpd-var-' Pin '.h5'];
-file_name = [lower(tech) '-' sprintf(name_eval,int16(bias*1e3),imp_time,deg,imp)];
-file_address = [dir_meas file_name];
+file_address = dirOrg(charinfo, cur_var, tech);
 %% Leitura da Medição
 % O osciloscópio salva os arquivos *.h5* em valores brutos,
 % registrando o coeficiente de multiplicação no cabeçalho. xInc e xOrg são
@@ -80,4 +47,44 @@ if num_WF > 1
     t = signal.t(1:length(y1),1);
     signal.t = [t, t];
 end
+end
+
+function file_address = dirOrg(charinfo, cur_var, tech)
+bias = cur_var(1);
+deg = cur_var(2);
+
+if ~isempty(strfind(lower(charinfo.span),'steady'))
+    imp = 0;
+    imp_time = 0;
+    techdir = 'dados\';
+else
+
+if strcmpi(charinfo.span(1:4),'sync')
+    if strcmpi(tech(1:4),'step')
+        imp = 0;
+        imp_time = 0;
+        techdir = [tech sprintf('\\dados\\%imA\\', int16(cur_var(4)))];
+    else
+        imp = cur_var(3);
+        imp_time = cur_var(4)*8;
+        techdir = [tech sprintf('-%i\\dados\\%imA\\', int16(cur_var(4)), int16(1e3*bias))];
+    end
+else
+    if strcmpi(tech(1:4),'step')
+        imp = 0;
+        imp_time = 0;
+        techdir = [tech '\\dados\\'];
+    else
+        imp = cur_var(3);
+        imp_time = cur_var(4)*8;
+        techdir = [tech sprintf('-%i\\dados\\', int16(cur_var(4)))];
+    end
+end
+end
+dir_meas = [charinfo.root  techdir];
+Pin = ['pinsoa' num2str(charinfo.pinsoa) 'dbm'];
+name_eval = ['i0.%03iA-t0.%02dns-deg%1.2fV-imp%1.2fV-mod',...]
+    sprintf('%.0f',charinfo.modV*1e3) 'mV-pinpd-var-' Pin '.h5'];
+file_name = [lower(tech) '-' sprintf(name_eval,int16(bias*1e3),imp_time,deg,imp)];
+file_address = [dir_meas file_name];
 end

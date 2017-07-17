@@ -1,4 +1,4 @@
-addpath('functions', 'plots');
+addpath('complementary','functions', 'plots');
 
 %% UI Configuration and Memory Allocation
 if ~exist('charinfo','var')
