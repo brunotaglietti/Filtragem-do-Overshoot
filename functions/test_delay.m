@@ -4,10 +4,8 @@
 % do impulso de chaveamento), e o método da caracterização (step, pisic, misic, e número
 % de bits de impulso, se aplicável.)
 
-function [signal] = soah5import(charinfo, cur_var, tech)
-fprintf(['\nLoading ' strrep(charinfo.span, '\', ' ') ' file for ',...
-    sprintf('%.0fmA and %.1fV.\n',1e3*cur_var(1), cur_var(2))]);
-file_address = dirOrg(charinfo, cur_var, tech);
+function [signal, lag] = test_delay(file_address)
+% file_address = [dir_meas file_name];
 %% Leitura da Medição
 % O osciloscópio salva os arquivos *.h5* em valores brutos,
 % registrando o coeficiente de multiplicação no cabeçalho. xInc e xOrg são
@@ -31,11 +29,13 @@ for cur_wf = 1:num_WF
 end
 
 if num_WF > 1
-    wnd = 1:1e6;    % DO NOT USE THE WHOLE SIGNAL FOR X-CORR
+    wnd = 1:1e7;    % DO NOT USE THE WHOLE SIGNAL FOR X-CORR
     wnd = wnd + 1e5;    % Step away from the start for safety
     yxc = abs(xcorr(signal.y(wnd,1), signal.y(wnd,2)));
     [~, yxci] = max(yxc);
     lag = length(wnd) - yxci;
+    disp(['Delay between channels: ' sprintf('%.15e', signal.t(lag + 1e3,1) - signal.t(1+ 1e3,1))]);
+    disp(['Number of samples cropped: ' sprintf('%i', lag)]);
     if lag>0
         y1 = signal.y(1:end - lag,1);
         y2 = signal.y(1 + lag:end,2);
@@ -46,47 +46,7 @@ if num_WF > 1
     signal.y = [y1, y2];
     t = signal.t(1:length(y1),1);
     signal.t = [t, t];
+    
+    stem(yxc)
 end
-end
-
-function file_address = dirOrg(charinfo, cur_var, tech)
-% STEADY IS NOW A TECH VARIATION, NOT A SPAN
-% NEEDS FIXING
-bias = cur_var(1);
-deg = cur_var(2);
-
-if ~isempty(strfind(lower(charinfo.span),'steady'))
-    imp = 0;
-    imp_time = 0;
-    techdir = 'dados\';
-else
-
-if strcmpi(charinfo.span(1:4),'sync')
-    if strcmpi(tech(1:4),'step')
-        imp = 0;
-        imp_time = 0;
-        techdir = [tech sprintf('\\dados\\%imA\\', int16(cur_var(4)))];
-    else
-        imp = cur_var(3);
-        imp_time = cur_var(4)*8;
-        techdir = [tech sprintf('-%i\\dados\\%imA\\', int16(cur_var(4)), int16(1e3*bias))];
-    end
-else
-    if strcmpi(tech(1:4),'step')
-        imp = 0;
-        imp_time = 0;
-        techdir = [tech '\\dados\\'];
-    else
-        imp = cur_var(3);
-        imp_time = cur_var(4)*8;
-        techdir = [tech sprintf('-%i\\dados\\', int16(cur_var(4)))];
-    end
-end
-end
-dir_meas = [charinfo.root  techdir];
-Pin = ['pinsoa' num2str(charinfo.pinsoa) 'dbm'];
-name_eval = ['i0.%03iA-t0.%02dns-deg%1.2fV-imp%1.2fV-mod',...]
-    sprintf('%.0f',charinfo.modV*1e3) 'mV-pinpd-var-' Pin '.h5'];
-file_name = [lower(tech) '-' sprintf(name_eval,int16(bias*1e3),imp_time,deg,imp)];
-file_address = [dir_meas file_name];
 end
