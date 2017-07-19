@@ -2,9 +2,9 @@ addpath('complementary','functions', 'plots');
 
 %% UI Configuration and Memory Allocation
 if ~exist('charinfo','var')
-    Meas_path = 'E:\Projetos Colaborativos\chav-amo-SOA-prbs\CIP-L\SSMF\Switched\';
+    Meas_path = 'E:\Projetos Colaborativos\chav-amo-SOA-prbs\';
     [FileName,Path, ~] = uigetfile(Meas_path);
-    load([Path FileName]); clear FileName;
+    load([Path FileName]); charinfo.root = Path; clear FileName;
 end
 [tech, bits, vars] = char_config(charinfo.cur,charinfo.deg); bias = vars.bias; deg = vars.deg;
 eF = {'s', 'w', 'w2', 'rls', 'rls2'}; M = zeros(length(deg),length(bias));

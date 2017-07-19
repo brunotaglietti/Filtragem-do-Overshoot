@@ -1,22 +1,22 @@
 spans = {'SSMF', 'NZD_25', 'NZD_50', 'NZD_75',...
     'NZD_25_DC', 'NZD_50_DC', 'NZD_75_DC'};
 
-
 for Fiber = 1:length(spans)
 
-charinfo.span = spans{Fiber};
-charinfo.sw_period = 2*100/12.5e9;
-charinfo.fmod = 6.9994e9;
-charinfo.pinpd = 'var';
-charinfo.pinsoa = -8;
-charinfo.modV = 1;
-charinfo.SOA = 'CIP-L';
-charinfo.cur = (0.080:0.020:0.120);
-charinfo.deg = 1.2;
-charinfo.imp = 1.2;
+charinfo.SOA = 'CIP-L';                 % SOA
+charinfo.span = spans{Fiber};           % Fiber setup
+charinfo.sw_period = 2*100/12.5e9;      % Switching period
+charinfo.fmod = 6.9994e9;               % Modulation frequency (symbols)
+charinfo.pinpd = 'var';                 % Photodetector power
+charinfo.pinsoa = -8;                   % SOA optical input power
+charinfo.EDFA = 0.150;                  % EDFA Pump laser current
+charinfo.modV = 1;                      % modulation amplitude
+charinfo.cur = (0.080:0.020:0.120);     % SOA polarization biases
+charinfo.deg = 1.2;                     % Switching step amplitude
+charinfo.imp = 1.2;                     % Pre-impulse amplitude
 
 cur = charinfo.cur; deg = charinfo.deg;
-direc_root = ['E:\txt_created\',...
+direc_root = ['E:\Projetos Colaborativos\chav-amo-SOA-prbs\',...
     charinfo.SOA, '\', charinfo.span, '\'];
 charinfo.root = direc_root;
 

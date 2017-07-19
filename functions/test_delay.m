@@ -31,12 +31,12 @@ end
 if num_WF > 1
     wnd = 1:1e7;    % DO NOT USE THE WHOLE SIGNAL FOR X-CORR
     wnd = wnd + 1e5;    % Step away from the start for safety
-    yxc = abs(xcorr(signal.y(wnd,1), signal.y(wnd,2)));
+    yxc = abs(xcorr(signal.y(wnd,1), signal.y(wnd,2)))/(2*length(signal.y(:,1)));
     [~, yxci] = max(yxc);
     lag = length(wnd) - yxci;
-    disp(['Delay between channels: ' sprintf('%.15e', signal.t(lag + 1e3,1) - signal.t(1+ 1e3,1))]);
+    disp(['Delay between channels: ' sprintf('%.15e', signal.t(lag + 1e5,1) - signal.t(1+ 1e5,1))]);
     disp(['Number of samples cropped: ' sprintf('%i', lag)]);
-    if lag>0
+    if lag>=0
         y1 = signal.y(1:end - lag,1);
         y2 = signal.y(1 + lag:end,2);
     elseif lag<0
