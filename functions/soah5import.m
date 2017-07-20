@@ -55,12 +55,6 @@ function file_address = dirOrg(charinfo, cur_var, tech)
 bias = cur_var(1);
 deg = cur_var(2);
 
-if ~isempty(strfind(lower(charinfo.span),'steady'))
-    imp = 0;
-    imp_time = 0;
-    techdir = 'dados\';
-else
-
 if strcmpi(charinfo.span(1:4),'sync')
     if strcmpi(tech(1:4),'step')
         imp = 0;
@@ -72,7 +66,7 @@ if strcmpi(charinfo.span(1:4),'sync')
         techdir = [tech sprintf('-%i\\dados\\%imA\\', int16(cur_var(4)), int16(1e3*bias))];
     end
 else
-    if strcmpi(tech(1:4),'step')
+    if strcmpi(tech(1:4),'step') || ~isempty(strfind(lower(tech),'steady'))
         imp = 0;
         imp_time = 0;
         techdir = [tech '\\dados\\'];
@@ -82,7 +76,7 @@ else
         techdir = [tech sprintf('-%i\\dados\\', int16(cur_var(4)))];
     end
 end
-end
+
 dir_meas = [charinfo.root  techdir];
 Pin = ['pinsoa' num2str(charinfo.pinsoa) 'dbm'];
 name_eval = ['i0.%03iA-t0.%02dns-deg%1.2fV-imp%1.2fV-mod',...]
