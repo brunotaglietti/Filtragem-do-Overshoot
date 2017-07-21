@@ -50,8 +50,6 @@ end
 end
 
 function file_address = dirOrg(charinfo, cur_var, tech)
-% STEADY IS NOW A TECH VARIATION, NOT A SPAN
-% NEEDS FIXING
 bias = cur_var(1);
 deg = cur_var(2);
 
