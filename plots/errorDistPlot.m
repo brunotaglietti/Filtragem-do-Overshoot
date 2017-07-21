@@ -1,4 +1,4 @@
-function errorDistPlot(s_info, errors, pTitle)
+function BERxGI = errorDistPlot(s_info, errors, pTitle)
 fprintf('Guard-Interval Analysis and plot.\n')
 if length(errors) == 1,  eFields = fieldnames(errors)';
 else, eFields = fieldnames(errors{1})'; end
@@ -22,7 +22,7 @@ else, eFields = fieldnames(errors{1})'; end
 maxGI = 25; endcrop = 5;
 M = zeros(1,maxGI+1);
 eFalloc = eFields; for i=1:length(eFields), eFalloc{2,i} = M; end
-GIerror = struct(eFalloc{:}); clear M eFalloc i;
+BERxGI = struct(eFalloc{:}); clear M eFalloc i;
 figure;
 LGImin = 0; plotStyle = {'-o', 'linewidth',2; '-+','linewidth',1};
 for N = 1:length(errors)
@@ -30,13 +30,13 @@ for N = 1:length(errors)
     for f = 1:length(eFields)
         for GI = 0:maxGI
             for k = 1:s_info.N_cycles
-                GIerror.(eFields{f})(GI+1) = GIerror.(eFields{f})(GI+1) + ...
+                BERxGI.(eFields{f})(GI+1) = BERxGI.(eFields{f})(GI+1) + ...
                     sum(cE.(eFields{f}){k}(1+GI:end-endcrop));
             end
-            GIerror.(eFields{f})(GI+1) = GIerror.(eFields{f})(GI+1)/...
+            BERxGI.(eFields{f})(GI+1) = BERxGI.(eFields{f})(GI+1)/...
             (sum(s_info.Samp_Cy)-GI*s_info.N_cycles);
         end
-        LGIerror = GIerror.(eFields{f});
+        LGIerror = BERxGI.(eFields{f});
         if LGImin > min(LGIerror(LGIerror~=0)), LGImin = min(LGIerror(LGIerror~=-Inf)); end
 %         LGIerror(LGIerror==-Inf) = -100;
         plot(0:maxGI,LGIerror,plotStyle{N,:}), hold on; %ylim([LGImin -1]);
