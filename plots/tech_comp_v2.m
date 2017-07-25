@@ -24,7 +24,7 @@ signal = soah5import(charinfo,cur_var,tech); % Import
 [switched, s_info] = sw_cycle(signal);
 [~, ~, ber, errors] = sw_filter(switched.y_s, switched.xs_slice, s_info);
 BERxGI{S,ib,1,1} = errorDistPlot(s_info, errors, [spans{S} ' - ' tech]);
-saveas(gcf, ['.\Results\BERxGI_' spans{S} '_' sprintf('%imA_',int16(1e3*bias)),...
+saveas(gcf, ['.\All Results\BERxGI_' spans{S} '_' sprintf('%imA_',int16(1e3*bias)),...
          tech '.png'], 'png');
 toc(tStart); close all;
 for T = 1:length(swTechs)
@@ -37,14 +37,14 @@ for ibits = 1:length(bitses)
     [switched, s_info] = sw_cycle(signal);
     [~, ~, ber, errors] = sw_filter(switched.y_s, switched.xs_slice, s_info);
     BERxGI{S,ib,T+1,ibits} = errorDistPlot(s_info, errors, [spans{S} ' - ' spTech]);
-    saveas(gcf, ['.\Results\BERxGI_' spans{S} '_' sprintf('%imA_',int16(1e3*bias)),...
+    saveas(gcf, ['.\All Results\BERxGI_' spans{S} '_' sprintf('%imA_',int16(1e3*bias)),...
          upper(spTech) '.png'], 'png');
     toc(tStart); close all;
 end
 end
 end
 end
-save('.\Results\BERxGI','BERxGI')
+save('.\All Results\BERxGI','BERxGI')
 % load handel
 % sound(y(1:5e4),Fs)
 system('shutdown -s')
