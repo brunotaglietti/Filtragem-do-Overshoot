@@ -67,7 +67,7 @@ else
     if strcmpi(tech(1:4),'step') || ~isempty(strfind(lower(tech),'steady'))
         imp = 0;
         imp_time = 0;
-        techdir = [tech '\\dados\\'];
+        techdir = [tech '\dados\'];
     else
         imp = cur_var(3);
         imp_time = cur_var(4)*8;
