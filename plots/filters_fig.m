@@ -22,6 +22,6 @@ end
 set(gca, 'YScale', 'log')
 
 grid on; ylim([1e-4 .07]); xlim([0 4]);
-xlabel('Guard-Interval'), ylabel('BER');
+xlabel('Guard-Interval (samples)'), ylabel('BER');
 set(gca,'fontsize', 12, 'FontName', 'Times New Roman')
 legend({'No Filter', 'Wiener (2 taps)', 'Wiener (4 taps)'},'location', 'southwest')
